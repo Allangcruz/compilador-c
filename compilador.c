@@ -4,8 +4,8 @@
 #include <locale.h>
 
 // Alunos:
-// Nome 1
-// Nome 2
+// Isabella Carolina Morais de Barros
+// Júlio Rodrigues Lobo
 
 // Armazena o total de memoria utilizada no compilador.
 int TOTAL_CONSUMO_MEMORIA = 0;
