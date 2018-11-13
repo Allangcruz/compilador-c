@@ -2,9 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <locale.h>
-
-#include "estrutura-arquivo.h"
-#include "utils.h"
+#include <limits.h>
 
 // Alunos:
 // Isabella Carolina Morais de Barros
@@ -15,6 +13,9 @@ int TOTAL_CONSUMO_MEMORIA = 0;
 
 // Valor maximo de cosumo de memoria em bytes 367001600 bytes => 350 megabytes
 int MAX_TOTAL_CONSUMO_MEMORIA = 367001600;
+
+#include "estrutura-arquivo.h"
+#include "utils.h"
 
 // Referencia do arquivo
 FILE *arquivo;
@@ -33,6 +34,7 @@ Lista* carregarArquivo() {
 	}
 
 	Lista* linhas = criaLista();
+	/*
 
     if (arquivo != NULL) {
 		while ((fgets(ch, sizeof(ch), arquivo)) != NULL) {
@@ -55,6 +57,7 @@ Lista* carregarArquivo() {
 	memoriaConsumida(sizeof(linhas), 1);
 	memoriaConsumida(sizeof(arquivo), 1);
 	memoriaConsumida(sizeof(nuLinhas), 1);
+	*/
 
 	fclose(arquivo);
 	return linhas;
@@ -64,7 +67,10 @@ int main () {
 	setlocale(LC_ALL, "PORTUGUESE");
 	printf("Compilador 2018");
 
+	Lista* linhas;
+
 	// Leitura de arquivo
+	linhas = carregarArquivo();
 
 	// Tabela de simbolos
 

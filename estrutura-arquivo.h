@@ -72,33 +72,6 @@ int insereListaFinal(Lista* lista, Linha lin) {
     return 1;
 }
 
-// Inseri no inicio da lista de acordo com parametros informados.
-int insereListaInicio(Lista* lista, Linha lin) {
-    if (lista == NULL) {
-        return 0;
-    }
-
-    Elem* no;
-    no = (Elem*) malloc(sizeof(Elem));
-
-    if (no == NULL) {
-        return 0;
-    }
-
-    no->dados = lin;
-    no->prox = (*lista);
-    no->ant = NULL;
-
-    //lista não vazia: apontar para o anterior!
-    if (*lista != NULL) {
-        (*lista)->ant = no;
-    }
-
-    *lista = no;
-
-    return 1;
-}
-
 // Remove o item da lista de acordo com o numero da linha informado.
 int removeLista(Lista* lista, int nuLinha) {
     if (lista == NULL) {
@@ -130,28 +103,6 @@ int removeLista(Lista* lista, int nuLinha) {
     // não é o último?
     if (no->prox != NULL) {
         no->prox->ant = no->ant;
-    }
-
-    free(no);
-    return 1;
-}
-
-// Remove o item no inicio da lista.
-int removeListaInicio(Lista* lista) {
-    if (lista == NULL) {
-        return 0;
-    }
-
-    // lista vazia
-    if ((*lista) == NULL) {
-        return 0;
-    }
-
-    Elem *no = *lista;
-    *lista = no->prox;
-
-    if(no->prox != NULL) {
-        no->prox->ant = NULL;
     }
 
     free(no);
@@ -232,10 +183,8 @@ void imprimeLista(Lista* lista) {
     while (no != NULL) {
         printf("Linha: %d \n", no->dados.linha);
         printf("Conteudo: %s \n", no->dados.conteudo);
-        printf("Total caracter linha: %d \n", strlen(no->dados.conteudo));
+        printf("Total caracter linha: %ld \n", strlen(no->dados.conteudo));
         printf("------------------------------------------\n");
         no = no->prox;
     }
 }
-
-
