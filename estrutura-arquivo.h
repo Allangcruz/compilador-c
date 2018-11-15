@@ -54,7 +54,7 @@ int insereListaFinal(Lista* lista, Linha lin) {
     no->dados = lin;
     no->prox = NULL;
 
-    // lista vazia: insere início
+    // lista vazia: insere inicio
     if ((*lista) == NULL) {
         no->ant = NULL;
         *lista = no;
@@ -88,7 +88,7 @@ int removeLista(Lista* lista, int nuLinha) {
         no = no->prox;
     }
 
-    // não encontrado
+    // nao encontrado
     if(no == NULL) {
         return 0;
     }
@@ -100,7 +100,7 @@ int removeLista(Lista* lista, int nuLinha) {
         no->ant->prox = no->prox;
     }
 
-    // não é o último?
+    // nao e o ultimo?
     if (no->prox != NULL) {
         no->prox->ant = no->ant;
     }
@@ -126,7 +126,7 @@ int removeListaFinal(Lista* lista) {
         no = no->prox;
     }
 
-    // remover o primeiro e único
+    // remover o primeiro e unico
     if(no->ant == NULL) {
         *lista = no->prox;
     } else {
@@ -154,12 +154,7 @@ int tamanhoLista(Lista* lista) {
     return cont;
 }
 
-/**
- * Verifica se a lista esta vazia.
- *
- * @param Lista* lista
- * @return int
- */
+// Verifica se a lista esta vazia.
 int listaVazia(Lista* lista) {
     if (lista == NULL) {
         return 1;
@@ -181,7 +176,7 @@ void imprimeLista(Lista* lista) {
     Elem* no = *lista;
 
     while (no != NULL) {
-        printf("Linha: %d \n", no->dados.linha);
+        printf("\nLinha: %d \n", no->dados.linha);
         printf("Conteudo: %s \n", no->dados.conteudo);
         printf("Total caracter linha: %ld \n", strlen(no->dados.conteudo));
         printf("------------------------------------------\n");

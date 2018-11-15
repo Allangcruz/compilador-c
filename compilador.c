@@ -3,6 +3,7 @@
 #include <string.h>
 #include <locale.h>
 #include <limits.h>
+#include <stdbool.h>
 
 // Alunos:
 // Isabella Carolina Morais de Barros
@@ -16,52 +17,8 @@ int MAX_TOTAL_CONSUMO_MEMORIA = 367001600;
 
 #include "estrutura-arquivo.h"
 #include "utils.h"
-
-// Referencia do arquivo
-FILE *arquivo;
-
-// Carrega o arquivo para processar os seu conteudo
-Lista* carregarArquivo() {
-	char nomeArquivo[]="programa.txt";
-	char ch[200];
-	int nuLinhas = 1;
-
-    arquivo = fopen(nomeArquivo, "r");
-
-    if (arquivo == NULL) {
-    	printf("\nArquivo não encontrado, verifique o caminho e nome.\n");
-        exit(1);
-	}
-
-	Lista* linhas = criaLista();
-	/*
-
-    if (arquivo != NULL) {
-		while ((fgets(ch, sizeof(ch), arquivo)) != NULL) {
-
-			if (strlen(ch) != 1) {
-				Linha item;
-				item.linha = nuLinhas;
-				strcpy(item.conteudo, ch);
-				insereListaFinal(linhas, item);
-
-				memoriaConsumida(sizeof(item), 1);
-			}
-
-			nuLinhas ++;
-		}
-	}
-
-	memoriaConsumida(sizeof(ch), 1);
-	memoriaConsumida(sizeof(nomeArquivo), 1);
-	memoriaConsumida(sizeof(linhas), 1);
-	memoriaConsumida(sizeof(arquivo), 1);
-	memoriaConsumida(sizeof(nuLinhas), 1);
-	*/
-
-	fclose(arquivo);
-	return linhas;
-}
+#include "tabela-simbolo.h"
+#include "regras-analises.h"
 
 int main () {
 	setlocale(LC_ALL, "PORTUGUESE");
@@ -71,12 +28,23 @@ int main () {
 
 	// Leitura de arquivo
 	linhas = carregarArquivo();
+	
+	// Imprime conteudo da lista
+	imprimeLista(linhas);
 
 	// Tabela de simbolos
+	TabelaSimbolo* tabelaSimbolos = criaListaTabelaSimbolo();
+	
+	// Analise e regras
+	analiseRegras(linhas, tabelaSimbolos);
+	
+	// limpar memoria lista com conteudo do arquivo
+	// liberaLista(linhas);
 
 	// Tratamento de erros
 
 	// Gerenciamento de limite de memoria
+	printf("\nCONSUMO DE MEMORIA: %d bytes", TOTAL_CONSUMO_MEMORIA);
 
     printf("\n\n");
     system("pause");

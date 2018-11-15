@@ -50,7 +50,6 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 // http://www.cprogressivo.net/2013/03/A-funcao-sizeof-e-blocos-vizinhos-de-memoria-em-C.html
 // situacao: 1 - incrementa, 2 - subtrai
 void memoriaConsumida(int memoria, int situacao) {
-	char a[1] = "a";
 	if (situacao == 1) {
 		TOTAL_CONSUMO_MEMORIA = TOTAL_CONSUMO_MEMORIA + memoria;
 	} else {
@@ -58,6 +57,52 @@ void memoriaConsumida(int memoria, int situacao) {
 	}
 
 	if (TOTAL_CONSUMO_MEMORIA > MAX_TOTAL_CONSUMO_MEMORIA) {
+		char a[1] = "a";
 		error(0, 12, a);
 	}
 }
+
+// Referencia do arquivo
+FILE *arquivo;
+
+// Carrega o arquivo para processar os seu conteudo
+Lista* carregarArquivo() {
+	char nomeArquivo[]="arquivo.txt";
+	char conteudoLinha[200];
+	int nuLinhas = 1;
+
+    arquivo = fopen(nomeArquivo, "r");
+
+    if (arquivo == NULL) {
+    	printf("\nArquivo nao encontrado, verifique o caminho ou nome do arquivo.\n");
+        exit(1);
+	}
+
+	Lista* linhas = criaLista();
+
+    if (arquivo != NULL) {
+		while ((fgets(conteudoLinha, sizeof(conteudoLinha), arquivo)) != NULL) {
+
+			if (strlen(conteudoLinha) != 1) {
+				Linha item;
+				item.linha = nuLinhas;
+				strcpy(item.conteudo, conteudoLinha);
+				insereListaFinal(linhas, item);
+
+				memoriaConsumida(sizeof(item), 1);
+			}
+
+			nuLinhas ++;
+		}
+	}
+
+	memoriaConsumida(sizeof(conteudoLinha), 1);
+	memoriaConsumida(sizeof(nomeArquivo), 1);
+	memoriaConsumida(sizeof(linhas), 1);
+	memoriaConsumida(sizeof(arquivo), 1);
+	memoriaConsumida(sizeof(nuLinhas), 1);
+
+	fclose(arquivo);
+	return linhas;
+}
+
