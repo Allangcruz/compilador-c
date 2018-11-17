@@ -33,14 +33,16 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 	removerQuebraLinha(palavra);
 
 	switch(tipoErro) {
-        /*
-		case 1:
-			printf("1 - Erro => Deve possuir a palavra reserva 'programa' no inicio, foi encontrado: (%s). [linha - %d].\n", palavra, nuLinha);
+        case 1:
+			printf("1 - Memória Insuficiente.\n");
 		break;
-
-        */
+		
+		case 2:
+			printf("2 -Arquivos está vazio.\n");
+		break;
+        
 		default:
-			printf("Error informado nÃ£o definido na tabela de erros.\n");
+			printf("Error informado nao definido na tabela de erros.\n");
 		break;
 	}
 	exit(1);
@@ -58,7 +60,7 @@ void memoriaConsumida(int memoria, int situacao) {
 
 	if (TOTAL_CONSUMO_MEMORIA > MAX_TOTAL_CONSUMO_MEMORIA) {
 		char a[1] = "a";
-		error(0, 12, a);
+		error(0, 1, a);
 	}
 }
 
@@ -106,3 +108,9 @@ Lista* carregarArquivo() {
 	return linhas;
 }
 
+// Exibe total de consumo de memoria
+void exibirConsumoMemoria() {
+	printf("\n####################################################################");
+	printf("\n# CONSUMO DE MEMORIA: %d bytes", TOTAL_CONSUMO_MEMORIA);
+	printf("\n####################################################################");
+}

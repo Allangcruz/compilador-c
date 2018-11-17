@@ -138,13 +138,13 @@ void imprimeTabelaSimbolo(TabelaSimbolo* lista) {
 
     ElemSimbolo* no = *lista;
     bool isListaVazia = isVazioTabelaSimbolo(lista);
-    printf("\n================================================\n");
-    printf("============== TABELA DE SIMBOLOS ==============\n");
-    printf("================================================\n");
+    printf("####################################################################\n");
+    printf("# TABELA DE SIMBOLOS \n");
+    printf("####################################################################\n");
     
     if (isListaVazia == 1) {
-    	printf("\tA TABELA DE SIMBOLOS ESTÁ VAZIA.\n");	
-    	exit(1);
+    	printf("# A TABELA DE SIMBOLOS ESTÁ VAZIA.\n");	
+    	printf("####################################################################\n\n");
 	}
 
     while (no != NULL) {

@@ -1,16 +1,1 @@
-main()
-
-function()
-
-in()
-
-out()
-switch
-case
-break
-default
-foreach()
-
-integer
-char
-float
+in("Bom dia teste 123");

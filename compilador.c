@@ -12,8 +12,13 @@
 // Armazena o total de memoria utilizada no compilador.
 int TOTAL_CONSUMO_MEMORIA = 0;
 
-// Valor maximo de cosumo de memoria em bytes 367001600 bytes => 350 megabytes
-int MAX_TOTAL_CONSUMO_MEMORIA = 367001600;
+// Foi utilizado o site para converter o valor de mega para bytes (https://www.gbmb.org/mb-to-bytes)
+// Valor maximo de cosumo de memoria em bytes 10485760  bytes => 10 megabytes
+int MAX_TOTAL_CONSUMO_MEMORIA = 10485760 ;
+
+// Constante com o total de palavras reservadas.
+#define NU_PALAVRA_RESERVADAS 12
+#define NU_TIPO_VARIAVEL 4
 
 #include "estrutura-arquivo.h"
 #include "utils.h"
@@ -22,7 +27,12 @@ int MAX_TOTAL_CONSUMO_MEMORIA = 367001600;
 
 int main () {
 	setlocale(LC_ALL, "PORTUGUESE");
-	printf("Compilador 2018");
+	printf("####################################################################\n");
+	printf("# Alunos:\n");
+	printf("# Isabella Carolina Morais de Barros\n");
+	printf("# Julio Rodrigues Lobo\n");
+	printf("# Compilador 2018\n");
+	printf("####################################################################\n\n");
 
 	Lista* linhas;
 
@@ -30,7 +40,7 @@ int main () {
 	linhas = carregarArquivo();
 	
 	// Imprime conteudo da lista
-	imprimeLista(linhas);
+	// imprimeLista(linhas);
 
 	// Tabela de simbolos
 	TabelaSimbolo* tabelaSimbolos = criaListaTabelaSimbolo();
@@ -40,11 +50,15 @@ int main () {
 	
 	// limpar memoria lista com conteudo do arquivo
 	// liberaLista(linhas);
-
-	// Tratamento de erros
-
+	
+	// exibir dados na tabela de simbolos
+	imprimeTabelaSimbolo(tabelaSimbolos);
+	
 	// Gerenciamento de limite de memoria
-	printf("\nCONSUMO DE MEMORIA: %d bytes", TOTAL_CONSUMO_MEMORIA);
+	exibirConsumoMemoria();
+	
+	// limpa os dados da tabela de simbolo 
+	liberaListaTabelaSimbolo(tabelaSimbolos);
 
     printf("\n\n");
     system("pause");
