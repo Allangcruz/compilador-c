@@ -1,1 +1,5 @@
-in("Bom dia teste 123");
+in("Bom dia teste 123    aasda"      asdads		);
+
+main() {
+	
+}

@@ -14,7 +14,7 @@ int TOTAL_CONSUMO_MEMORIA = 0;
 
 // Foi utilizado o site para converter o valor de mega para bytes (https://www.gbmb.org/mb-to-bytes)
 // Valor maximo de cosumo de memoria em bytes 10485760  bytes => 10 megabytes
-int MAX_TOTAL_CONSUMO_MEMORIA = 10485760 ;
+int MAX_TOTAL_CONSUMO_MEMORIA = 10485760;
 
 // Constante com o total de palavras reservadas.
 #define NU_PALAVRA_RESERVADAS 12

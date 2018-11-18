@@ -40,6 +40,10 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 		case 2:
 			printf("2 -Arquivos está vazio.\n");
 		break;
+		
+		case 3:
+			printf("3 - Não Existe a definicao do 'main()'.\n");
+		break;
         
 		default:
 			printf("Error informado nao definido na tabela de erros.\n");

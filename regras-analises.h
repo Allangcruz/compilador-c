@@ -1,3 +1,6 @@
+// A tabela ASCII utilizada esta referente ao site abaixo:
+// http://www.ricardoarrigoni.com.br/tabela-ascii-completa/
+
 // Vetor com palavras reservadas.
 char palavrasReservadas[NU_PALAVRA_RESERVADAS][10] = {"main", "function", "in", "out", "switch", "case", "break", "default", "foreach", "integer", "char", "float"};
 
@@ -27,37 +30,53 @@ void imprimirTiposVariaveis() {
 // Aplica validacoes referente a analise lexica e regras definidas na documentação
 void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 	if (lista == NULL) {
-		error(0, 2, "");
+		char a[1] = "a";
+		error(0, 2, a);
         exit(1);
     }
     
     Elem* no = *lista;
     
     int i, valorAscii, nuLinha, count = 0;
-    char palavraAux[UCHAR_MAX], conteudoLinha[UCHAR_MAX], palavraAuxVariavel[UCHAR_MAX], tipoVariavel[UCHAR_MAX], tamanhoPalavra[UCHAR_MAX], auxTamanhoPalavra[UCHAR_MAX];
+    char palavraAux[UCHAR_MAX], conteudoLinha[UCHAR_MAX], conteudoLinhaComAspas[UCHAR_MAX], palavraAuxVariavel[UCHAR_MAX], tipoVariavel[UCHAR_MAX], tamanhoPalavra[UCHAR_MAX], auxTamanhoPalavra[UCHAR_MAX];
     bool isVariavel = false, isPalavraReservada = false, isCondicaoParada = false, isLinhaComVariavel = false, isString = false, isPossuiPontoVirgula = false, isLeia = false;
+    int isDeclaracaoMain = 0;
+    
+    limparLixoVetor(palavraAux);
+	limparLixoVetor(conteudoLinha);
+	limparLixoVetor(conteudoLinhaComAspas);
 
     while (no != NULL) {
      	strcpy(conteudoLinha, no->dados.conteudo);
 		nuLinha = no->dados.linha;
+	
+		removePalavrasComAspas(conteudoLinha, conteudoLinhaComAspas, nuLinha);
+		isDeclaracaoMain = declaracaoMain(conteudoLinha, isDeclaracaoMain);
 		
-		removePalavrasComAspas(conteudoLinha, nuLinha);
+		// --------------------------------------------------------------
+		// Teste de debug		
+		// printf("Numero linha (%i):\n", no->dados.linha);
+		// puts(no->dados.conteudo);
+		// printf("Com aspas:\n");
+		// puts(conteudoLinhaComAspas);
+		// printf("Sem aspas:\n");
+		// puts(conteudoLinha);
+		// printf("\n\n");
+		// --------------------------------------------------------------
 		
-		printf("Numero linha (%i):\n", no->dados.linha);
-		puts(no->dados.conteudo);
-		printf("Sem aspas:\n");
-		puts(conteudoLinha);
-		printf("\n\n");
-		
-//		for (i = 0; i < strlen(conteudoLinha); i++) {
-//			valorAscii = (int) conteudoLinha[i];
-//			printf("Linha => %i - Coluna => %i - Valor (%c)\n", nuLinha, i , conteudoLinha[i]);
-//		} // fim for que percorre as colunas da linha
+		for (i = 0; i < strlen(conteudoLinha); i++) {
+			valorAscii = (int) conteudoLinha[i];
+			// printf("Linha => %i - Coluna => %i - Valor (%c)\n", nuLinha, i , conteudoLinha[i]);
+		} // fim for que percorre as colunas da linha
 		
 		no = no->prox;
-		printf("\n------------------------------------------\n");
 		
 	} // fim while que percorre as linhas
+	
+	// Verifica a declaracao do 'main' pelo menos uma vez.
+	if (isDeclaracaoMain == 0) {
+		error(0, 3, conteudoLinha);
+	}
     
 	// declaracaoMain(lista);
 	
@@ -66,104 +85,107 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 	printf("\n\n");
 }
 
-// Verifica declaracao do modulo/funcao main
-void declaracaoMain(Lista* lista) {
-	if (lista == NULL) {
-        exit(1);
-    }
-
-    Elem* no = *lista;
-    char inicio[UCHAR_MAX], final[UCHAR_MAX], palavraAux[UCHAR_MAX];
-    int i, nuLinha, count = 0, valorAscii;
-    
-    limparLixoVetor(final);
-    limparLixoVetor(inicio);
-    limparLixoVetor(palavraAux);
-    
-    strcpy(inicio, no->dados.conteudo);
-    nuLinha = no->dados.linha;
-
-    for (i = 0; i < strlen(inicio); i++) {
-		valorAscii = (int) inicio[i]; 
-		
-		// \0, quebra de linha
-		if (valorAscii != 10) {
-			
-			// apenas se nao for espaço e tabs
-			if (valorAscii != 32 && valorAscii != 9) {
-				palavraAux[count] = (char) valorAscii;
-				count++;
-			}
-		} 
-	}
-
-	if (strcmp(palavraAux, palavrasReservadas[0]) != 0) {
-		error(nuLinha, 1, palavraAux);
+// Verifica se o caracter informado é uma condição de parada.
+// Caso seja uma condicao de parada retorna 'true' senao 'false'
+int isCondicaoDeParada(int valorAscii) {
+	int isValido = 0;
+	
+	// Verifica se a caracter ascii informado e uma condição de parada, para ser feita uma determinada analise.
+	// As condiçoes de parada sao os caracterers : \0, (, ), virgula, ponto virgula, #
+	if ((valorAscii == 10) || (valorAscii == 40) || (valorAscii == 41) || (valorAscii == 44) || (valorAscii == 59) || (valorAscii == 35)) {
+		isValido = 1;
 	}
 	
-	// valida a palavra fim na ultima linha 
+	return isValido;
+}
+
+// Verifica declaracao do modulo/funcao main
+int declaracaoMain(char *palavra, int isDeclaracaoMain) {
+	
+	if (isDeclaracaoMain == 1) {
+		return isDeclaracaoMain;
+	}
+	
+	int i, valorAscii, count = 0, isParadaCondicao = 0;
+	char palavraAux[UCHAR_MAX];
+	
 	limparLixoVetor(palavraAux);
-	count = 0;
 
-	while (no != NULL) {
-		if (no->prox == NULL) {
-			strcpy(final, no->dados.conteudo);		
-			nuLinha = no->dados.linha;
-		}
-        no = no->prox;
-    }
-
-    for (i = 0; i < strlen(inicio); i++) {
-		valorAscii = (int) final[i]; 
+	for (i = 0; i < strlen(palavra); i++) {
+		valorAscii = (int) palavra[i];
 		
-		// \0, quebra de linha
-		if (valorAscii != 10) {
-			
-			// apenas se nao for espaço e tabs
-			if (valorAscii != 32 && valorAscii != 9) {
-				palavraAux[count] = (char) valorAscii;
-				count++;
+		isParadaCondicao = isCondicaoDeParada(valorAscii);
+		
+		if (isParadaCondicao == 0) {
+			palavraAux[count] = palavra[i];
+			count++;
+			continue;
+		}	
+		
+		if (isDeclaracaoMain == false && isParadaCondicao == 1) {
+			if (strcmp(palavraAux, palavrasReservadas[0]) == 0) {
+				isDeclaracaoMain = true;
 			}
+			
+			limparLixoVetor(palavraAux);
+			count = 0;
 		}
 	}
-
-	if (strcmp(palavraAux, palavrasReservadas[9]) != 0) {
-		error(nuLinha, 2, palavraAux);
-	}
+	return isDeclaracaoMain;
 }
 
 // Remove palavras que estejam dentro de aspas e que possua duplo balanceamento valido.
-void removePalavrasComAspas(char *palavra, int nuLinha) {
+void removePalavrasComAspas(char *palavra, char *palavraComAspas, int nuLinha) {
 	
-	int i, valorAscii, count = 0, isPossuiAspas = 0;
+	int i, valorAscii, countPalavra = 0, countPalavraValida = 0, isPossuiAspas = 0;
 	
+	char palavraComConteudoAspas[UCHAR_MAX];
 	char palavraSemConteudoAspas[UCHAR_MAX];
+	
+	limparLixoVetor(palavraComConteudoAspas);
 	limparLixoVetor(palavraSemConteudoAspas);
+	limparLixoVetor(palavraComAspas);
 	
 	for (i = 0; i < strlen(palavra); i++) {
 		
 		valorAscii = (int) palavra[i];
+		//printf("%c\n", palavra[i]);
 		
 		//  se não abriu as aspas e este é a primeira abertura de aspas (34 = ")
 		if (isPossuiAspas == 0 && valorAscii == 34) {
 			isPossuiAspas = 1;
-			palavraSemConteudoAspas[count] = palavra[i];
-			count++;
+			palavraComConteudoAspas[countPalavra] = palavra[i];
+			countPalavra++;
+			// printf("primerio if\n");
+			continue;
+		}	
+		
+		if (isPossuiAspas > 0 && valorAscii != 34) {
+			palavraComConteudoAspas[countPalavra] = palavra[i];
+			countPalavra++;
+			// printf("segundo if\n");
 			continue;
 		}
 		
-		if (isPossuiAspas > 0 && valorAscii != 34) {
-			palavraSemConteudoAspas[count] = palavra[i];
-			count++;
+		//  segunda aspa para fechar o duplo balanceamento existente nela
+		if (isPossuiAspas == 1 && valorAscii == 34) {
+			palavraComConteudoAspas[countPalavra] = palavra[i];
+			countPalavra++;
+			isPossuiAspas = 0;
+			// printf("terceiro if\n");
+			continue;
 		}
 		
-		if (isPossuiAspas == 1 && valorAscii == 34) {
-			palavraSemConteudoAspas[count] = palavra[i];
-			count++;
-			isPossuiAspas = 0;
+		// monta conteudo palavra valida sem as aspas
+		// Alem de ignorar "vazio" = 32 e "tabulacao" = 9
+		if ((isPossuiAspas == 0) && (valorAscii != 32) && (valorAscii != 9)) {
+			// printf("quarto if\n");
+			palavraSemConteudoAspas[countPalavraValida] = palavra[i];
+			countPalavraValida++;
 		}
 	}
 	
 	strcpy(palavra, palavraSemConteudoAspas);
+	strcpy(palavraComAspas, palavraComConteudoAspas);
 }
 
