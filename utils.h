@@ -42,7 +42,27 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 		break;
 		
 		case 3:
-			printf("3 - Não Existe a definicao do 'main()'.\n");
+			printf("3 - Modulo principal Inexistente.\n");
+		break;
+		
+		case 4:
+			printf("4 - Erro => A variavel informada (%s) esta invalida. [linha - %d].\n", palavra, nuLinha);
+		break;
+		
+		case 5:
+			printf("5 - Erro => Verifique o duplo balanceamento de '[' ou ']', em:\n==>> %s <<==\nesta invalida. [linha - %d].\n", palavra, nuLinha);
+		break;
+		
+		case 6:
+			printf("6 - Erro => Verifique o duplo balanceamento de '(' ou ')', em:\n==>> %s <<==\nesta invalida. [linha - %d].\n", palavra, nuLinha);
+		break;
+		
+		case 7:
+			printf("7 - Erro => Verifique o duplo balanceamento de abertura e fechamento de 'aspas', em:\n==>> %s <<==\nesta invalida. [linha - %d].\n", palavra, nuLinha);
+		break;
+		
+		case 8:
+			printf("8 - Erro => Verifique o duplo balanceamento de abertura e fechamento de 'apóstrofos', em:\n==>> %s <<==\nesta invalida. [linha - %d].\n", palavra, nuLinha);
 		break;
         
 		default:

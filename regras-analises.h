@@ -50,23 +50,38 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
      	strcpy(conteudoLinha, no->dados.conteudo);
 		nuLinha = no->dados.linha;
 	
+		verificarDuploBalanceamentoAspasParentesConchetes(conteudoLinha, nuLinha);
 		removePalavrasComAspas(conteudoLinha, conteudoLinhaComAspas, nuLinha);
 		isDeclaracaoMain = declaracaoMain(conteudoLinha, isDeclaracaoMain);
 		
-		// --------------------------------------------------------------
-		// Teste de debug		
-		// printf("Numero linha (%i):\n", no->dados.linha);
-		// puts(no->dados.conteudo);
-		// printf("Com aspas:\n");
-		// puts(conteudoLinhaComAspas);
-		// printf("Sem aspas:\n");
-		// puts(conteudoLinha);
-		// printf("\n\n");
-		// --------------------------------------------------------------
+		//puts(conteudoLinha);
 		
 		for (i = 0; i < strlen(conteudoLinha); i++) {
 			valorAscii = (int) conteudoLinha[i];
+
+			// acumula palavra ate encontra condição de parada, assim realiza a verificação.
+//			if (isCondicaoDeParada(valorAscii) == 0) {
+//				palavraAux[count] = (char) valorAscii;
+//				count++;
+//			} else {
+//				
+//				isVariavel = isDeclaracaoVariaveis(palavraAux, nuLinha);
+//				
+//				// verifica se não e uma variavel, se ele nao variavel, verificar se é palavra reservada
+//				if (! isVariavel) {
+//					printf("If isVariavel\n");
+//				} else {
+//					printf("Else isVariavel\n");
+//				}
+//				
+//				limparLixoVetor(palavraAux);
+//				count=0;
+//			}
+			// puts(palavraAux);
 			// printf("Linha => %i - Coluna => %i - Valor (%c)\n", nuLinha, i , conteudoLinha[i]);
+			
+			
+			
 		} // fim for que percorre as colunas da linha
 		
 		no = no->prox;
@@ -77,12 +92,115 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 	if (isDeclaracaoMain == 0) {
 		error(0, 3, conteudoLinha);
 	}
-    
-	// declaracaoMain(lista);
-	
-	//removePalavrasComAspas();
-	
+    exit(1);
 	printf("\n\n");
+}
+
+// Verifica os duplos balanceamento de aspas, parenteses e conchetes.
+void verificarDuploBalanceamentoAspasParentesConchetes(char *palavra, int nuLinha) {
+	int i, valorAscii, isBalanceamentoApostofo = 0, isBalanceamentoAspas = 0, isBalanceamentoColchetes = 0, isBalanceamentoParenteses = 0;
+	
+	for (i = 0; i < strlen(palavra); i++) {
+		valorAscii = (int) palavra[i];
+		
+		// Verifica se existe um fechamento de apostofo = ' = 39
+		if (valorAscii == 39 && isBalanceamentoApostofo > 0) {
+			isBalanceamentoApostofo--;
+			continue;
+		}
+		
+		// Verifica se existe uma abertura de apostofo = ' = 39
+		if (valorAscii == 39 && isBalanceamentoApostofo == 0) {
+			isBalanceamentoApostofo++;
+			continue;
+		}
+		
+		// Verifica se existe um fechamento de aspas = " = 34
+		if (valorAscii == 34 && isBalanceamentoAspas > 0) {
+			isBalanceamentoAspas--;
+			continue;
+		}
+		
+		// Verifica se existe uma abertura de aspas = " = 34
+		if (valorAscii == 34 && isBalanceamentoAspas == 0) {
+			isBalanceamentoAspas++;
+			continue;
+		}
+		
+		// Verifica se existe uma abertura de parenteses ( = 40
+		if (valorAscii == 40) {
+			isBalanceamentoParenteses++;
+			continue;
+		}
+		
+		// Verifica se existe um fechamento de parenteses = ) = 41
+		if (valorAscii == 41) {
+			isBalanceamentoParenteses--;
+			continue;
+		}
+		
+		// Verifica se existe uma abertura de colchetes [ = 91
+		if (valorAscii == 91) {
+			isBalanceamentoColchetes++;
+			continue;
+		}
+		
+		// Verifica se existe um fechamento de colchetes = ] = 93
+		if (valorAscii == 93) {
+			isBalanceamentoColchetes--;
+			continue;
+		}		
+	}
+	
+	if (isBalanceamentoApostofo != 0) {
+		error(nuLinha, 8, palavra);
+	}
+	
+	if (isBalanceamentoAspas != 0) {
+		error(nuLinha, 7, palavra);
+	}
+	
+	if (isBalanceamentoColchetes != 0) {
+		error(nuLinha, 5, palavra);
+	}
+	
+	if (isBalanceamentoParenteses != 0) {
+		error(nuLinha, 6, palavra);
+	}
+}
+
+// Valida declaracoes de variaveis.
+int isDeclaracaoVariaveis(char *palavra, int nuLinha) {
+	int isValido = 0, i, valorAscii;
+	
+	valorAscii = (int) palavra[0];
+	printf("[isDeclaracaoVariaveis]:\n");
+	puts(palavra);
+	
+	// verifica se a palavra inicializa com $ = 36
+	if (valorAscii == 36) {
+		// apenas a-z
+		if ((int) palavra[1] >= 97 && (int) palavra[1] <= 122) {
+			isValido = 1;
+		} else {
+			isValido = 0;
+			printf("\n[Declaração variavel]\n");
+			error(nuLinha, 4, palavra);
+		}
+		
+		for (i = 2; i < strlen(palavra); i++) {
+			valorAscii = (int) palavra[i];
+			
+			// permiter apenas a-z, 0-9, A-Z, [, ], .
+			if (! ((valorAscii >= 97 && valorAscii <= 122) || (valorAscii >= 48 && valorAscii <= 57) || (valorAscii >= 65 && valorAscii <= 90) || valorAscii == 91 || valorAscii == 93 || valorAscii == 46)) {
+				isValido = 0;
+				printf("\n[Declaração variavel]\n");
+				error(nuLinha, 4, palavra);
+			}
+		}
+	}
+	
+	return isValido;
 }
 
 // Verifica se o caracter informado é uma condição de parada.
