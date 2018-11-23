@@ -4,6 +4,7 @@ typedef struct simbolo {
     char palavra[UCHAR_MAX];
     char valor[UCHAR_MAX];
     char funcao_modulo[UCHAR_MAX];
+    char tamanho[UCHAR_MAX];
 } Simbolo;
 
 // Struct que armazena os elementos da lista, de acordo com o tipo do dado.
@@ -154,7 +155,9 @@ void imprimeTabelaSimbolo(TabelaSimbolo* lista) {
         printf("Tipo de dado: %s \n", no->dados.tipo);
         printf("Nome: %s \n", no->dados.palavra);
         printf("Possivel valor: %s \n", no->dados.valor);
-        printf("Função/modulo: %s \n", no->dados.funcao_modulo);
+        printf("Função/modulo:  \n");
+        printf("Tamanho da variavel: %s \n", no->dados.tamanho);
+        // printf("Função/modulo: %s \n", no->dados.funcao_modulo);
         printf("-------------------------------------------------------------------\n");
         no = no->prox;
     }

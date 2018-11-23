@@ -313,6 +313,75 @@ int isVariavelRedeclarada(char* palavra, TabelaSimbolo* tabelaSimbolos) {
 	return isValido;
 }
 
+// Verifica se a variavel informada possui tamanho, caso sim, retorna o tamanho.
+void getTamanhoVariavel(char palavra[], char retorno[], int nuLinha) {
+	int i, tamanhoPalavra = strlen(palavra) - 1, valorAscii, count = 0, countValorEntreConchete = 0, isPossuiConchete = 0;
+	char valorTamanho[UCHAR_MAX], auxValorTamanho[UCHAR_MAX];
+
+	limparLixoVetor(valorTamanho);
+	limparLixoVetor(auxValorTamanho);
+
+	// percorre a palavra de traz para frente
+	for (i = tamanhoPalavra; i >= 0; i--) {
+		valorAscii = palavra[i];
+		// printf("(%d) - %c \n", i, palavra[i]);
+
+		// verifica se o ultimo caracter e um ], caso seja vai percorrendo para salvar o tamanho
+		if (i == tamanhoPalavra && valorAscii == 93) {
+			isPossuiConchete++;
+			continue;
+		} else if((valorAscii >= 48 && valorAscii <= 57) && valorAscii != 91) { // condicao que ira acumular enquanto for numero e nao encontrar [.
+			auxValorTamanho[count] = palavra[i];
+			countValorEntreConchete++;
+
+			// printf("=>=> (%d) - %c \n", i, palavra[i]);
+			count++;
+		} else if (valorAscii == 91) {
+			isPossuiConchete++;
+			break;
+		}
+	}
+
+	// se existir apenas um abertura ou fechamento de conchete
+	if (isPossuiConchete == 1) {
+		error(nuLinha, 9, palavra);
+	} else if (isPossuiConchete == 2) {
+		if (countValorEntreConchete == 0) {
+			error(nuLinha, 8, palavra);
+		}
+	}
+
+	count = 0;
+
+	for (i = strlen(auxValorTamanho) - 1; i >= 0; i--) {
+		valorTamanho[count] = auxValorTamanho[i];
+		count++;
+	}
+
+	strcpy(retorno, valorTamanho);
+}
+
+// Remove a string referente ao tamanho da variavel, [].
+void removeTamanhoVariavel(char palavra[]) {
+	int i, tamanhoPalavra = strlen(palavra) - 1, valorAscii;
+
+	// percorre a palavra de traz para frente
+	for (i = tamanhoPalavra; i >= 0; i--) {
+		valorAscii = palavra[i];
+
+		// verifica se o ultimo caracter e um ], caso seja vai percorrendo para salvar o tamanho
+		if (i == tamanhoPalavra && valorAscii == 93) {
+			palavra[i] = '\0';
+			continue;
+		} else if((valorAscii >= 48 && valorAscii <= 57) && valorAscii != 91) { // condição que ira acumular enquanto for numero e nao encontrar [.
+			palavra[i] = '\0';
+		} else if (valorAscii == 91) {
+			palavra[i] = '\0';
+			break;
+		}
+	}
+}
+
 // Aplica validacoes referente a analise lexica e regras definidas na documentacao
 void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 	if (lista == NULL) {
@@ -392,11 +461,6 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 
 						// TODO caso seja 'switch'
 
-						// TODO caso seja 'case'
-
-						// TODO caso seja 'break'
-
-						// TODO caso seja 'default'
 					}
 
 				} else {
@@ -408,11 +472,20 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 							error(nuLinha, 11, palavraAux);
 						}
 
-						// verificar se tipo inteiro esta declarado com [, ]
-						// verificarPresencaColchetes(palavraAux, tipoVariavel, nuLinha);
-
 						// salva a variavel valida
 	    				Simbolo novoSimbolo;
+
+						if (strcmp(tipoVariavel, palavrasReservadas[10]) == 0) {
+							// caso tenha tamanho recupera o tamanho e adiciona na tabela de simbolo
+							getTamanhoVariavel(palavraAux, auxTamanhoPalavra, nuLinha);
+							strcpy(tamanhoPalavra, auxTamanhoPalavra);
+							strcpy(novoSimbolo.tamanho, tamanhoPalavra);
+
+							removeTamanhoVariavel(palavraAux);
+						} else {
+							strcpy(novoSimbolo.tamanho, "");
+						}
+
 						// Salvar o modulo/funcao
 
 						// Salvar valor
@@ -424,7 +497,6 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 	    				strcpy(novoSimbolo.tipo, tipoVariavel);
 
 						insereFinalTabelaSimbolo(tabelaSimbolos, novoSimbolo);
-						limparLixoVetor(auxTamanhoPalavra);
 					}
 				}
 
