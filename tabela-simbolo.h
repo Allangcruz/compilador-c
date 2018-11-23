@@ -53,7 +53,7 @@ int insereFinalTabelaSimbolo(TabelaSimbolo* lista, Simbolo simbolo) {
     no->dados = simbolo;
     no->prox = NULL;
 
-    // lista vazia: insere início
+    // lista vazia: insere inicio
     if ((*lista) == NULL) {
         no->ant = NULL;
         *lista = no;
@@ -88,7 +88,7 @@ int insereInicioTabelaSimbolo(TabelaSimbolo* lista, Simbolo simbolo) {
     no->prox = (*lista);
     no->ant = NULL;
 
-    //lista não vazia: apontar para o anterior!
+    //lista nao vazia: apontar para o anterior!
     if (*lista != NULL) {
         (*lista)->ant = no;
     }
@@ -141,9 +141,9 @@ void imprimeTabelaSimbolo(TabelaSimbolo* lista) {
     printf("####################################################################\n");
     printf("# TABELA DE SIMBOLOS \n");
     printf("####################################################################\n");
-    
+
     if (isListaVazia == 1) {
-    	printf("# A TABELA DE SIMBOLOS ESTÁ VAZIA.\n");	
+    	printf("# A TABELA DE SIMBOLOS ESTA VAZIA.\n");
     	printf("####################################################################\n\n");
 	}
 

@@ -1,0 +1,22 @@
+main(){
+	char $nome[50];
+ 	in($nome);
+	out("Seu nome é" $nome);
+	integer $a1;
+	foreach($a1=0;$a1<10&&a1>0;$a1++)
+	out("numero"+$a1);
+	float $valor[2.2];
+	in($valor);
+	out("O valor é" $valor)
+	switch (valor)
+	{
+	case valor1:
+          // código 1
+	break;
+	case valor2:
+          // código 2
+	break;
+	default:
+          // código 3
+          break;
+	}

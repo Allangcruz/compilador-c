@@ -6,6 +6,8 @@ void limparLixoVetor(char vetor[]) {
 		vetor[i] = '\0';
 		i ++;
 	}
+
+	memoriaConsumida(sizeof(i), 1);
 }
 
 // Remove a quebra de linha da palavra informada
@@ -25,6 +27,12 @@ void removerQuebraLinha(char* palavra) {
 	}
 
 	strcpy(palavra, palavraAux);
+
+	memoriaConsumida(sizeof(i), 1);
+	memoriaConsumida(sizeof(valorAscii), 1);
+	memoriaConsumida(sizeof(count), 1);
+	memoriaConsumida(sizeof(palavraAux), 1);
+
 }
 
 // Retorna a mensagem de error conforme parametros informados.
@@ -34,41 +42,46 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 
 	switch(tipoErro) {
         case 1:
-			printf("1 - Memória Insuficiente.\n");
+			printf("1 - Memï¿½ria Insuficiente.\n");
 		break;
-		
+
 		case 2:
-			printf("2 -Arquivos está vazio.\n");
+			printf("2 -Arquivos estï¿½ vazio.\n");
 		break;
-		
+
 		case 3:
 			printf("3 - Modulo principal Inexistente.\n");
 		break;
-		
+
 		case 4:
 			printf("4 - Erro => A variavel informada (%s) esta invalida. [linha - %d].\n", palavra, nuLinha);
 		break;
-		
+
 		case 5:
 			printf("5 - Erro => Verifique o duplo balanceamento de '[' ou ']', em:\n==>> %s <<==\nesta invalida. [linha - %d].\n", palavra, nuLinha);
 		break;
-		
+
 		case 6:
 			printf("6 - Erro => Verifique o duplo balanceamento de '(' ou ')', em:\n==>> %s <<==\nesta invalida. [linha - %d].\n", palavra, nuLinha);
 		break;
-		
+
 		case 7:
 			printf("7 - Erro => Verifique o duplo balanceamento de abertura e fechamento de 'aspas', em:\n==>> %s <<==\nesta invalida. [linha - %d].\n", palavra, nuLinha);
 		break;
-		
+
 		case 8:
-			printf("8 - Erro => Verifique o duplo balanceamento de abertura e fechamento de 'apóstrofos', em:\n==>> %s <<==\nesta invalida. [linha - %d].\n", palavra, nuLinha);
+			printf("8 - Erro => Verifique o duplo balanceamento de abertura e fechamento de 'apï¿½strofos', em:\n==>> %s <<==\nesta invalida. [linha - %d].\n", palavra, nuLinha);
 		break;
-        
+
+		case 9:
+			printf("9 - Erro => Verifique o duplo balanceamento de chaves, pois esta incorreto.");
+		break;
+
 		default:
 			printf("Error informado nao definido na tabela de erros.\n");
 		break;
 	}
+	printf("\n");
 	exit(1);
 }
 

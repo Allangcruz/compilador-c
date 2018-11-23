@@ -1,5 +1,3 @@
-in("Bom dia teste 123    aasda     asdads		);
-
-main() {
-	
-}
+	char $nome[50];
+	integer $a1;
+	main() {}
