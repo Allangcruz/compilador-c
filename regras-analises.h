@@ -278,7 +278,7 @@ int isPalavrasReservadas(char* palavra) {
 }
 
 
-// Verifica se a palavra reservada � um tipo de variavel.
+// Verifica se a palavra reservada e um tipo de variavel.
 int isTipoVariavel(char *palavra) {
 	int isValido = 0, i;
 
@@ -288,6 +288,27 @@ int isTipoVariavel(char *palavra) {
 			break;
 		}
 	}
+
+	return isValido;
+}
+
+// Valida se a variavel informada ja esta declarada na tabela de simbolos
+int isVariavelRedeclarada(char* palavra, TabelaSimbolo* tabelaSimbolos) {
+	int isValido = 0;
+
+	if (tabelaSimbolos == NULL) {
+        exit(1);
+    }
+
+	ElemSimbolo* no = *tabelaSimbolos;
+
+    while (no != NULL) {
+    	if (strcmp(palavra, no->dados.palavra) == 0) {
+    		isValido = 1;
+    		break;
+		}
+        no = no->prox;
+    }
 
 	return isValido;
 }
@@ -383,9 +404,9 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 
 					if (isLinhaComVariavel == true && isIn == false) {
 						// validar se a variavel ja foi declarada.
-						// if (validarVariavelDeclarada(palavraAux, tabelaSimbolos) == 1) {
-							// error(nuLinha, 13, palavraAux);
-						// }
+						if (isVariavelRedeclarada(palavraAux, tabelaSimbolos) == 1) {
+							error(nuLinha, 11, palavraAux);
+						}
 
 						// verificar se tipo inteiro esta declarado com [, ]
 						// verificarPresencaColchetes(palavraAux, tipoVariavel, nuLinha);

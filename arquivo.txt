@@ -1,3 +1,4 @@
 	char $nome[50];
+	char $nome[50];
 	integer $a1;
 	main() {}

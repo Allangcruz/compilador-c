@@ -81,6 +81,10 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 			printf("10 - Erro => A palavra (%s) nao e uma variavel valida. [linha - %d].\n", palavra, nuLinha);
 		break;
 
+		case 11:
+			printf("11 - Erro => Uma variavel com o nome (%s) já foi declarada. [linha - %d].\n", palavra, nuLinha);
+		break;
+
 		default:
 			printf("Error informado nao definido na tabela de erros.\n");
 		break;
