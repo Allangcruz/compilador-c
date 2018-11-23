@@ -46,7 +46,7 @@ int main () {
 
 	// Imprime conteudo da lista
 	// imprimeLista(linhas);
-	
+
 	// Imprime as palavras reservadas definidas
 	// imprimirPalavrasReservadas();
 

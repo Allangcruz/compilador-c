@@ -115,8 +115,9 @@ int isDeclaracaoVariaveis(char *palavra, int nuLinha) {
 	int isValido = 0, i, valorAscii;
 
 	valorAscii = (int) palavra[0];
-	// printf("[isDeclaracaoVariaveis]:\n");
-	// puts(palavra);
+
+	printf("[isDeclaracaoVariaveis] %d:\n", nuLinha);
+	puts(palavra);
 
 	// verifica se a palavra inicializa com $ = 36
 	if (valorAscii == 36) {
@@ -273,22 +274,22 @@ int isPalavrasReservadas(char* palavra) {
 		if (strcmp(palavra, palavrasReservadas[i]) == 0) {
 			isValido = 1;
 			break;
-		}		
+		}
 	}
-	
+
 	return isValido;
 }
 
 
-// Verifica se a palavra reservada é um tipo de variavel.
+// Verifica se a palavra reservada ï¿½ um tipo de variavel.
 int isTipoVariavel(char *palavra) {
 	int isValido = 0, i;
-	
+
 	for (i = 0; i < NU_TIPO_VARIAVEL; i++) {
 		if (strcmp(palavra, tiposVariaveis[i]) == 0) {
 			isValido = 1;
 			break;
-		}		
+		}
 	}
 
 	return isValido;
@@ -348,9 +349,9 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 
 				// verifica se nao e uma variavel, se ele nao variavel, verificar se e palavra reservada
 				if (! isVariavel) {
-					printf("%d - [%s] - [%c] - [%s] - [%d] - Não é uma variavel\n", nuLinha, palavraAux, conteudoLinha[i], tipoVariavel, isLinhaComVariavel);
+					// printf("%d - [%s] - [%c] - [%s] - [%d] - Nao e uma variavel\n", nuLinha, palavraAux, conteudoLinha[i], tipoVariavel, isLinhaComVariavel);
 					isPalavraReservada = isPalavrasReservadas(palavraAux);
-					
+
 					// quando for palavra reservada posso tratar aqui, exemplo se for tipo de variavel posso guarda para validar depois
 					if (isPalavraReservada == true) {
 						// caso seja: integer, char, float
@@ -358,7 +359,7 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 							strcpy(tipoVariavel, palavraAux);
 							isLinhaComVariavel = true;
 						}
-						
+
 						// TODO caso seja 'in'
 						// isLeia = validarPalavraLeia(palavraAux, nuLinha, conteudoLinha);
 						/*
@@ -366,46 +367,47 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 							error(nuLinha, 16, conteudoLinha);
 						}
 						*/
-						
+
 						// TODO caso seja 'out'
-											
+
 						// TODO caso seja 'foreach'
-						
+
 						// TODO caso seja 'switch'
-						
+
 						// TODO caso seja 'case'
-						
+
 						// TODO caso seja 'break'
-						
+
 						// TODO caso seja 'default'
 					}
-										
+
 				} else {
-					printf("%d - [%s] - [%c] - [%s] - [%d] - E uma variavel\n", nuLinha, palavraAux, conteudoLinha[i], tipoVariavel, isLinhaComVariavel);
-					
+					// printf("%d - [%s] - [%c] - [%s] - [%d] - E uma variavel\n", nuLinha, palavraAux, conteudoLinha[i], tipoVariavel, isLinhaComVariavel);
+
 					if (isLinhaComVariavel == true && isLeia == false) {
-						// validar se a variavel ja foi declarada. 
+						// validar se a variavel ja foi declarada.
 						// if (validarVariavelDeclarada(palavraAux, tabelaSimbolos) == 1) {
 							// error(nuLinha, 13, palavraAux);
 						// }
-						
+
 						// verificar se tipo inteiro esta declarado com [, ]
 						// verificarPresencaColchetes(palavraAux, tipoVariavel, nuLinha);
 
 						// salva a variavel valida
 	    				Simbolo novoSimbolo;
-	    				
+
 	    				// caso tenha tamanho recupera o tamanho e adiciona na tabela de simbolo
-						getTamanhoVariavel(palavraAux, auxTamanhoPalavra, nuLinha);
-						strcpy(tamanhoPalavra, auxTamanhoPalavra);
-						strcpy(novoSimbolo.tamanho, tamanhoPalavra);
-	    				
-						removeTamanhoVariavel(palavraAux);
+						// getTamanhoVariavel(palavraAux, auxTamanhoPalavra, nuLinha);
+						// strcpy(tamanhoPalavra, auxTamanhoPalavra);
+						// strcpy(novoSimbolo.tamanho, tamanhoPalavra);
+
+						// removeTamanhoVariavel(palavraAux);
 	    				strcpy(novoSimbolo.palavra, palavraAux);
 	    				strcpy(novoSimbolo.tipo, tipoVariavel);
-						
+
 						insereFinalTabelaSimbolo(tabelaSimbolos, novoSimbolo);
 						limparLixoVetor(auxTamanhoPalavra);
+						printf("\n==>ALLAN<==\n");
 					}
 				}
 
@@ -415,7 +417,11 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 			// puts(palavraAux);
 			// printf("Linha => %i - Coluna => %i - Valor (%c)\n", nuLinha, i , conteudoLinha[i]);
 
-
+			// apenas para inicio de variavel, os que inicializam  com $ - 36
+			if (valorAscii == 36) {
+				palavraAux[count] = (char) valorAscii;
+				count++;
+			}
 
 		} // fim for que percorre as colunas da linha
 
