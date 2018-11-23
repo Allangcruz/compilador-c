@@ -77,6 +77,10 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 			printf("9 - Erro => Verifique o duplo balanceamento de chaves, pois esta incorreto.");
 		break;
 
+		case 10:
+			printf("10 - Erro => A palavra (%s) nao e uma variavel valida. [linha - %d].\n", palavra, nuLinha);
+		break;
+
 		default:
 			printf("Error informado nao definido na tabela de erros.\n");
 		break;

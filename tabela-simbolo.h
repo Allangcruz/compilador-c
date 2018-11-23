@@ -155,7 +155,7 @@ void imprimeTabelaSimbolo(TabelaSimbolo* lista) {
         printf("Nome: %s \n", no->dados.palavra);
         printf("Possivel valor: %s \n", no->dados.valor);
         printf("Função/modulo: %s \n", no->dados.funcao_modulo);
-        printf("------------------------------------------------\n");
+        printf("-------------------------------------------------------------------\n");
         no = no->prox;
     }
 }

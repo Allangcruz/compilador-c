@@ -116,9 +116,6 @@ int isDeclaracaoVariaveis(char *palavra, int nuLinha) {
 
 	valorAscii = (int) palavra[0];
 
-	printf("[isDeclaracaoVariaveis] %d:\n", nuLinha);
-	puts(palavra);
-
 	// verifica se a palavra inicializa com $ = 36
 	if (valorAscii == 36) {
 		// apenas a-z
@@ -126,8 +123,8 @@ int isDeclaracaoVariaveis(char *palavra, int nuLinha) {
 			isValido = 1;
 		} else {
 			isValido = 0;
-			printf("\n[Declaracao variavel]\n");
-			error(nuLinha, 4, palavra);
+			// printf("\n[Declaracao variavel]\n");
+			error(nuLinha, 10, palavra);
 		}
 
 		for (i = 2; i < strlen(palavra); i++) {
@@ -136,8 +133,8 @@ int isDeclaracaoVariaveis(char *palavra, int nuLinha) {
 			// permiter apenas a-z, 0-9, A-Z, [, ], .
 			if (! ((valorAscii >= 97 && valorAscii <= 122) || (valorAscii >= 48 && valorAscii <= 57) || (valorAscii >= 65 && valorAscii <= 90) || valorAscii == 91 || valorAscii == 93 || valorAscii == 46)) {
 				isValido = 0;
-				printf("\n[Declaracao variavel]\n");
-				error(nuLinha, 4, palavra);
+				// printf("\n[Declaracao variavel]\n");
+				error(nuLinha, 10, palavra);
 			}
 		}
 	}
@@ -307,7 +304,7 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 
     int i, valorAscii, nuLinha, count = 0;
     char palavraAux[UCHAR_MAX], conteudoLinha[UCHAR_MAX], conteudoLinhaComAspas[UCHAR_MAX], palavraAuxVariavel[UCHAR_MAX], tipoVariavel[UCHAR_MAX], tamanhoPalavra[UCHAR_MAX], auxTamanhoPalavra[UCHAR_MAX];
-    bool isVariavel = false, isPalavraReservada = false, isCondicaoParada = false, isLinhaComVariavel = false, isString = false, isPossuiPontoVirgula = false, isLeia = false;
+    bool isVariavel = false, isPalavraReservada = false, isCondicaoParada = false, isLinhaComVariavel = false, isString = false, isPossuiPontoVirgula = false, isIn = false;
     int isDeclaracaoMain = 0, isBalanceamentoChaves = 0;
 
     limparLixoVetor(palavraAux);
@@ -361,9 +358,9 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 						}
 
 						// TODO caso seja 'in'
-						// isLeia = validarPalavraLeia(palavraAux, nuLinha, conteudoLinha);
+						// isIn = isPalavraIn(palavraAux, nuLinha, conteudoLinha);
 						/*
-						if (isLinhaComVariavel == true && isLeia == true) {
+						if (isLinhaComVariavel == true && isIn == true) {
 							error(nuLinha, 16, conteudoLinha);
 						}
 						*/
@@ -384,7 +381,7 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 				} else {
 					// printf("%d - [%s] - [%c] - [%s] - [%d] - E uma variavel\n", nuLinha, palavraAux, conteudoLinha[i], tipoVariavel, isLinhaComVariavel);
 
-					if (isLinhaComVariavel == true && isLeia == false) {
+					if (isLinhaComVariavel == true && isIn == false) {
 						// validar se a variavel ja foi declarada.
 						// if (validarVariavelDeclarada(palavraAux, tabelaSimbolos) == 1) {
 							// error(nuLinha, 13, palavraAux);
@@ -395,19 +392,18 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 
 						// salva a variavel valida
 	    				Simbolo novoSimbolo;
+						// Salvar o modulo/funcao
 
-	    				// caso tenha tamanho recupera o tamanho e adiciona na tabela de simbolo
-						// getTamanhoVariavel(palavraAux, auxTamanhoPalavra, nuLinha);
-						// strcpy(tamanhoPalavra, auxTamanhoPalavra);
-						// strcpy(novoSimbolo.tamanho, tamanhoPalavra);
+						// Salvar valor
 
-						// removeTamanhoVariavel(palavraAux);
+						// Salvar a palavra
 	    				strcpy(novoSimbolo.palavra, palavraAux);
+
+						// Salva o tipo da variavel
 	    				strcpy(novoSimbolo.tipo, tipoVariavel);
 
 						insereFinalTabelaSimbolo(tabelaSimbolos, novoSimbolo);
 						limparLixoVetor(auxTamanhoPalavra);
-						printf("\n==>ALLAN<==\n");
 					}
 				}
 
