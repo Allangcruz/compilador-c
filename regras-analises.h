@@ -148,8 +148,8 @@ int isCondicaoDeParada(int valorAscii) {
 	int isValido = 0;
 
 	// Verifica se a caracter ascii informado e uma condicao de parada, para ser feita uma determinada analise.
-	// As condicoes de parada sao os caracterers : \0, (, ), virgula, ponto virgula, $
-	if ((valorAscii == 10) || (valorAscii == 40) || (valorAscii == 41) || (valorAscii == 44) || (valorAscii == 59) || (valorAscii == 36)) {
+	// As condicoes de parada sao os caracterers : \0 => 10, ( => 40, ) => 41, virgula => 44, ponto virgula => 59, $ => 36, { => 123, } => 125, = => 61
+	if ((valorAscii == 10) || (valorAscii == 40) || (valorAscii == 41) || (valorAscii == 44) || (valorAscii == 59) || (valorAscii == 36) || (valorAscii == 123) || (valorAscii == 125) || (valorAscii == 61)) {
 		isValido = 1;
 	}
 
@@ -257,11 +257,17 @@ void removePalavrasComAspas(char *palavra, char *palavraComAspas, int nuLinha) {
 
 // Verifica se existe "ponto final" = ; na finalizacao de linhas.
 int verificaPontoFinal(char *palavra, int nuLinha) {
-	printf("Numero linha %d", nuLinha);
-	puts(palavra);
+	removerQuebraLinha(palavra);
+	int totalPalavra = strlen(palavra);
+	int valorAscii = (int) palavra[totalPalavra-1];
+	//printf("\n|||Numero linha %d - %d - %c |||\n", nuLinha, totalPalavra, palavra[totalPalavra-1]);
+	
+	// apenas se o ultimo caracter nao for ; => 59
+	if (valorAscii != 59) {
+		error(nuLinha, 13, palavra);
+	}
 	return 0;
 }
-
 
 // Valida palavras reservadas, utilizar como boleando, apos passar a palavra. validar separadamente.
 int isPalavrasReservadas(char* palavra) {
@@ -276,7 +282,6 @@ int isPalavrasReservadas(char* palavra) {
 
 	return isValido;
 }
-
 
 // Verifica se a palavra reservada e um tipo de variavel.
 int isTipoVariavel(char *palavra) {
@@ -382,6 +387,22 @@ void removeTamanhoVariavel(char palavra[]) {
 	}
 }
 
+// Atualiza o valor da variavel existente.
+void atualizarValorVariavel(TabelaSimbolo* lista, char* noVariavel, char* valor) {
+	if (lista == NULL) {
+        return;
+    }
+    
+	ElemSimbolo* no = *lista;
+	
+	while (no != NULL) {
+		if (strcmp(noVariavel, no->dados.palavra) == 0) {
+			strcpy(no->dados.valor, valor);
+		}
+		no = no->prox;
+    }
+}
+
 // Aplica validacoes referente a analise lexica e regras definidas na documentacao
 void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 	if (lista == NULL) {
@@ -409,7 +430,7 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 		verificarDuploBalanceamentoAspasParentesConchetes(conteudoLinha, nuLinha);
 		removePalavrasComAspas(conteudoLinha, conteudoLinhaComAspas, nuLinha);
 		isDeclaracaoMain = declaracaoMain(conteudoLinha, isDeclaracaoMain);
-		//puts(conteudoLinha);
+		puts(conteudoLinhaComAspas);
 
 		for (i = 0; i < strlen(conteudoLinha); i++) {
 			valorAscii = (int) conteudoLinha[i];
@@ -436,7 +457,7 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 
 				// verifica se nao e uma variavel, se ele nao variavel, verificar se e palavra reservada
 				if (! isVariavel) {
-					// printf("%d - [%s] - [%c] - [%s] - [%d] - Nao e uma variavel\n", nuLinha, palavraAux, conteudoLinha[i], tipoVariavel, isLinhaComVariavel);
+					printf("%d - [%s] - [%c] - [%s] - [%d] - Nao e uma variavel\n", nuLinha, palavraAux, conteudoLinha[i], tipoVariavel, isLinhaComVariavel);
 					isPalavraReservada = isPalavrasReservadas(palavraAux);
 
 					// quando for palavra reservada posso tratar aqui, exemplo se for tipo de variavel posso guarda para validar depois
@@ -464,7 +485,7 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 					}
 
 				} else {
-					// printf("%d - [%s] - [%c] - [%s] - [%d] - E uma variavel\n", nuLinha, palavraAux, conteudoLinha[i], tipoVariavel, isLinhaComVariavel);
+					printf("%d - [%s] - [%c] - [%s] - [%d] - E uma variavel\n", nuLinha, palavraAux, conteudoLinha[i], tipoVariavel, isLinhaComVariavel);
 
 					if (isLinhaComVariavel == true && isIn == false) {
 						// validar se a variavel ja foi declarada.
@@ -500,6 +521,14 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 					}
 				}
 
+				// por causa que quando e encontrado 2 ou mais criterio de paradas seguidos ele estava comparando com a palavra vazia, e isso nao pode acontecer
+				if (strlen(palavraAux) > 0) {
+					// compara se e uma variavel e se e uma palavra reservada
+					if (isVariavel == false && isPalavraReservada == false) {
+						error(nuLinha, 12, palavraAux);
+					}
+				}
+				
 				limparLixoVetor(palavraAux);
 				count=0;
 			}
@@ -512,9 +541,18 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 				count++;
 			}
 
+			// Verifica se existe ponto final nas linhas que possuem
+			// Declaracao de variaveis, in, out, ...
+			if (isVariavel == true) {
+				verificaPontoFinal(conteudoLinha, nuLinha);
+			}
+			
 		} // fim for que percorre as colunas da linha
-
+		
 		no = no->prox;
+		limparLixoVetor(conteudoLinhaComAspas);
+		isLinhaComVariavel = false;
+		limparLixoVetor(tipoVariavel);
 
 	} // fim while que percorre as linhas
 

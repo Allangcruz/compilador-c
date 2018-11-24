@@ -57,7 +57,7 @@ int main () {
 	analiseRegras(linhas, tabelaSimbolos);
 
 	// limpar memoria lista com conteudo do arquivo
-	// liberaLista(linhas);
+	liberaLista(linhas);
 
 	// exibir dados na tabela de simbolos
 	imprimeTabelaSimbolo(tabelaSimbolos);

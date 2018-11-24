@@ -42,11 +42,11 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 
 	switch(tipoErro) {
         case 1:
-			printf("1 - Mem�ria Insuficiente.\n");
+			printf("1 - Memoria Insuficiente.\n");
 		break;
 
 		case 2:
-			printf("2 -Arquivos est� vazio.\n");
+			printf("2 -Arquivos esta vazio.\n");
 		break;
 
 		case 3:
@@ -70,7 +70,7 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 		break;
 
 		case 8:
-			printf("8 - Erro => Verifique o duplo balanceamento de abertura e fechamento de 'ap�strofos', em:\n==>> %s <<==\nesta invalida. [linha - %d].\n", palavra, nuLinha);
+			printf("8 - Erro => Verifique o duplo balanceamento de abertura e fechamento de 'apostrofos', em:\n==>> %s <<==\nesta invalida. [linha - %d].\n", palavra, nuLinha);
 		break;
 
 		case 9:
@@ -82,7 +82,15 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 		break;
 
 		case 11:
-			printf("11 - Erro => Uma variavel com o nome (%s) já foi declarada. [linha - %d].\n", palavra, nuLinha);
+			printf("11 - Erro => Uma variavel com o nome (%s) ja foi declarada. [linha - %d].\n", palavra, nuLinha);
+		break;
+
+		case 12:
+			printf("12 - Erro => A palavra (%s) nao e uma palavra reservada e nem variavel, nao consta no escopo. [linha - %d].\n", palavra, nuLinha);
+		break;
+		
+		case 13:
+			printf("13 - Erro => A linha e uma declaracao de variavel e a mesma deve conter ';' no final da linha (%s). [linha - %d].\n", palavra, nuLinha);
 		break;
 
 		default:

@@ -1,5 +1,5 @@
-	char $nome[50];
-	integer $a1;
-	main() {}
+main () {
+	char $nome[50]="Allan";
+	integer $allan=1;
+}
 
-allan
