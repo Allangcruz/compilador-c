@@ -1,5 +1,6 @@
 main () {
-	char $nome[50]="Allan";
-	integer $allan=1;
+	char $nome[50]="Isabela";
+	integer $isabela;
+	in($teste);
 }
 

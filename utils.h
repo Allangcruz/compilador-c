@@ -92,6 +92,10 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 		case 13:
 			printf("13 - Erro => A linha e uma declaracao de variavel e a mesma deve conter ';' no final da linha (%s). [linha - %d].\n", palavra, nuLinha);
 		break;
+		
+		case 14:
+			printf("14 - Erro => A declaração da palavra reservada 'in' esta incorreta, (%s), favor verificar. [linha - %d].\n", palavra, nuLinha);
+		break;
 
 		default:
 			printf("Error informado nao definido na tabela de erros.\n");
