@@ -1,6 +1,3 @@
-main () {
-	char $nome[50]="Isabela";
-	integer $isabela;
-	in($teste);
-}
+char $nome[10];
+
 
