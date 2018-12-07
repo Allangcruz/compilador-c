@@ -1,0 +1,10 @@
+main () {
+	char $nome[50]=     "Isabela   "  ;
+
+			integer    		$isabela;
+	float $numero[2.2];
+	in($teste);
+	
+
+	function(){}
+}

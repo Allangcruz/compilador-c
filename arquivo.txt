@@ -1,3 +1,16 @@
-char $nome[10];
+main() {
+
+    char $nome;
+    char $nome1[10];
+    char $nome3, $nome4;
+
+    integer $idade;
+    float $preco;
+
+
+    in($idade);
+
+    out($nome, "teste");
+}	
 
 

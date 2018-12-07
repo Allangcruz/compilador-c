@@ -261,7 +261,7 @@ int verificaPontoFinal(char *palavra, int nuLinha) {
 	int totalPalavra = strlen(palavra);
 	int valorAscii = (int) palavra[totalPalavra-1];
 	//printf("\n|||Numero linha %d - %d - %c |||\n", nuLinha, totalPalavra, palavra[totalPalavra-1]);
-	
+
 	// apenas se o ultimo caracter nao for ; => 59
 	if (valorAscii != 59) {
 		error(nuLinha, 13, palavra);
@@ -392,9 +392,9 @@ void atualizarValorVariavel(TabelaSimbolo* lista, char* noVariavel, char* valor)
 	if (lista == NULL) {
         return;
     }
-    
+
 	ElemSimbolo* no = *lista;
-	
+
 	while (no != NULL) {
 		if (strcmp(noVariavel, no->dados.palavra) == 0) {
 			strcpy(no->dados.valor, valor);
@@ -405,69 +405,69 @@ void atualizarValorVariavel(TabelaSimbolo* lista, char* noVariavel, char* valor)
 
 // Verifica se a linha possui estrutura 'in' e verifica seus criterios.
 int isPalavraIn(char * palavra, int nuLinha, char * linha) {
-	int isValido = 0, 
-		i , 
-		count = 0, 
-		parenteses = 0, 
-		valorAscii, 
-		isPossuiPontoVirgula = 0, 
+	int isValido = 0,
+		i ,
+		count = 0,
+		parenteses = 0,
+		valorAscii,
+		isPossuiPontoVirgula = 0,
 		isInValido = 0; // verifica se a palavra leia esta no padrao 'in('
-	
+
 	char palavraAux[UCHAR_MAX];
 	limparLixoVetor(palavraAux);
-	
-	// verifica se a palavra reservada é leia
+
+	// verifica se a palavra reservada ï¿½ leia
 	if (strcmp(palavra, palavrasReservadas[1]) == 0) {
-		
-		// identifica se a palavra reservada é 'leia'
+
+		// identifica se a palavra reservada ï¿½ 'leia'
 		isValido = 1;
-		
+
 		// valida se apos a palavra 'leia' possui obrigatoriamente um '(' e uma variavel.
 		for (i = 0; i < strlen(linha); i++) {
 			valorAscii = (int) linha[i];
-			
-			// Verifica se a caracter ascii informado e uma condição de parada, para ser feita uma determinada analise.
-			// As condiçoes de parada sao os caracterers : \0, espaco, ), virgula, ponto virgula, $, tabs
+
+			// Verifica se a caracter ascii informado e uma condiï¿½ï¿½o de parada, para ser feita uma determinada analise.
+			// As condicoes de parada sao os caracterers : \0, espaco, ), virgula, ponto virgula, $, tabs
 			if ((valorAscii != 10) && (valorAscii != 32) && (valorAscii != 41) && (valorAscii != 44) && (valorAscii != 36) && (valorAscii != 9)) {
 				palavraAux[count] = (char) valorAscii;
 				count++;
-				
+
 				if (strcmp(palavraAux, "in($") == 0) {
 					isInValido++;
 					break;
 				}
 			}
 		}
-		
+
 		if (isInValido == 0) {
 			error(nuLinha, 19, linha);
 		}
-		
-		// nao pode haver declarações dentro da estrutura
+
+		// nao pode haver declaracoes dentro da estrutura
 		for (i = 0; i < strlen(linha); i++) {
-			valorAscii = (int) linha[i]; 
-			
+			valorAscii = (int) linha[i];
+
 			// cada caractere tem que ser diferente de \0, espaco e tab
 			if ((valorAscii != 10) && (valorAscii != 32) && (valorAscii != 9)) {
 				// balanceamento de parenteses '('
 				if (valorAscii == 40) {
 					parenteses ++;
 				}
-				
+
 				// balanceamento de parenteses ')'
 				if (valorAscii == 41) {
 					parenteses --;
 				}
 			}
 		}
-		
+
 		// verifica se a linha do leia possui ';'
 		for (i = strlen(linha); i > 0; i--) {
-			valorAscii = (int) linha[i]; 
-			
+			valorAscii = (int) linha[i];
+
 			// cada caractere tem que ser diferente de \0, espaco e tab
 			if ((valorAscii != 10) && (valorAscii != 32) && (valorAscii != 9)) {
-				
+
 				// verifica se o caracter e ';'
 				if (valorAscii == 59 && isPossuiPontoVirgula == 0) {
 					isPossuiPontoVirgula ++;
@@ -475,18 +475,18 @@ int isPalavraIn(char * palavra, int nuLinha, char * linha) {
 				}
 			}
 		}
-		
+
 		// verifica se existe duplo balanceamento de parentes
 		if (parenteses != 0) {
 			error(nuLinha, 17, linha);
 		}
-		
+
 		// verificar o ; no final da linha do 'in'
 		if (isPossuiPontoVirgula != 1) {
 			error(nuLinha, 18, linha);
 		}
 	}
-		
+
 	return isValido;
 }
 
@@ -504,15 +504,15 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 		valorAscii,
 		nuLinha,
 		count = 0;
-		
+
     char palavraAux[UCHAR_MAX],
-		 conteudoLinha[UCHAR_MAX], 
+		 conteudoLinha[UCHAR_MAX],
 		 conteudoLinhaComAspas[UCHAR_MAX],
 		 palavraAuxVariavel[UCHAR_MAX],
 		 tipoVariavel[UCHAR_MAX],
 		 tamanhoPalavra[UCHAR_MAX],
 		 auxTamanhoPalavra[UCHAR_MAX];
-		 
+
     bool isVariavel = false,
 		 isPalavraReservada = false,
 		 isCondicaoParada = false,
@@ -520,7 +520,7 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 		 isPossuiPontoVirgula = false,
 		 isIn = false,
 		 isOut = false;
-		 
+
     int isDeclaracaoMain = 0,
 		isBalanceamentoChaves = 0;
 
@@ -634,7 +634,7 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 						error(nuLinha, 12, palavraAux);
 					}
 				}
-				
+
 				limparLixoVetor(palavraAux);
 				count=0;
 			}
@@ -646,10 +646,10 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 				palavraAux[count] = (char) valorAscii;
 				count++;
 			}
-			
-			// Verifica se o proximo caracterer é = 61
+
+			// Verifica se o proximo caracterer ï¿½ = 61
 			if (valorAscii == 61) {
-				// TODO tratar aqui quando encontrar = 61, e for uma declaração de variavel
+				// TODO tratar aqui quando encontrar = 61, e for uma declaraï¿½ï¿½o de variavel
 				// atualizarValorVariavel(tabelaSimbolos, char* noVariavel, char* valor)
 			}
 
@@ -658,9 +658,9 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 			if (isVariavel == true && isIn == false) {
 				verificaPontoFinal(conteudoLinha, nuLinha);
 			}
-			
+
 		} // fim for que percorre as colunas da linha
-		
+
 		no = no->prox;
 		limparLixoVetor(conteudoLinhaComAspas);
 		isLinhaComVariavel = false;

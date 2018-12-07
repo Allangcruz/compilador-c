@@ -14,7 +14,9 @@ void limparLixoVetor(char vetor[]) {
 void removerQuebraLinha(char* palavra) {
 	int i, valorAscii, count = 0;
 	char palavraAux[UCHAR_MAX];
-	
+
+	limparLixoVetor(palavraAux);
+
 	for (i = 0; i < strlen(palavra); i++) {
 		valorAscii = (int) palavra[i];
 
@@ -23,21 +25,20 @@ void removerQuebraLinha(char* palavra) {
 			count++;
 		}
 	}
-	
+
 	strcpy(palavra, palavraAux);
 
 	memoriaConsumida(sizeof(i), 1);
 	memoriaConsumida(sizeof(valorAscii), 1);
 	memoriaConsumida(sizeof(count), 1);
 	memoriaConsumida(sizeof(palavraAux), 1);
+
 }
 
 // Retorna a mensagem de error conforme parametros informados.
 void error(int nuLinha, int tipoErro, char *palavra) {
 
-	if (tipoErro != 1) {
-		removerQuebraLinha(palavra);
-	}
+	//removerQuebraLinha(palavra);
 
 	switch(tipoErro) {
         case 1:
@@ -45,7 +46,7 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 		break;
 
 		case 2:
-			printf("2 - Arquivos esta vazio.\n");
+			printf("2 -Arquivos esta vazio.\n");
 		break;
 
 		case 3:
@@ -87,13 +88,13 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 		case 12:
 			printf("12 - Erro => A palavra (%s) nao e uma palavra reservada e nem variavel, nao consta no escopo. [linha - %d].\n", palavra, nuLinha);
 		break;
-		
+
 		case 13:
-			printf("13 - Erro => A linha e uma declaracao de variavel e a mesma deve conter ';' no final da linha (%s). [linha - %d].\n", palavra, nuLinha);
+			printf("13 - Erro => A linha e uma declaracao de variavel e a mesma deve conter ; no final da linha (%s). [linha - %d].\n", palavra, nuLinha);
 		break;
-		
+
 		case 14:
-			printf("14 - Erro => A declaração da palavra reservada 'in' esta incorreta, (%s), favor verificar. [linha - %d].\n", palavra, nuLinha);
+			printf("14 - Erro => A declaracao da palavra reservada 'in' esta incorreta, (%s), favor verificar. [linha - %d].\n", palavra, nuLinha);
 		break;
 
 		default:
@@ -115,7 +116,7 @@ void memoriaConsumida(int memoria, int situacao) {
 	}
 
 	if (TOTAL_CONSUMO_MEMORIA > MAX_TOTAL_CONSUMO_MEMORIA) {
-		char a[1]= {"a"};
+		char a[1] = "a";
 		error(0, 1, a);
 	}
 }
