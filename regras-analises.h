@@ -148,8 +148,8 @@ int isCondicaoDeParada(int valorAscii) {
 	int isValido = 0;
 
 	// Verifica se a caracter ascii informado e uma condicao de parada, para ser feita uma determinada analise.
-	// As condicoes de parada sao os caracterers : \0 => 10, ( => 40, ) => 41, virgula => 44, ponto virgula => 59, $ => 36, { => 123, } => 125, = => 61
-	if ((valorAscii == 10) || (valorAscii == 40) || (valorAscii == 41) || (valorAscii == 44) || (valorAscii == 59) || (valorAscii == 36) || (valorAscii == 123) || (valorAscii == 125) || (valorAscii == 61)) {
+	// As condicoes de parada sao os caracterers : Line Feed – LF (Windows) => 10, Enter – CR (Unix) => 13, ( => 40, ) => 41, virgula => 44, ponto virgula => 59, $ => 36, { => 123, } => 125, = => 61, ! => 33
+	if ((valorAscii == 10) || (valorAscii == 13) || (valorAscii == 40) || (valorAscii == 41) || (valorAscii == 44) || (valorAscii == 59) || (valorAscii == 36) || (valorAscii == 123) || (valorAscii == 125) || (valorAscii == 61) || (valorAscii == 33)) {
 		isValido = 1;
 	}
 
@@ -260,7 +260,8 @@ int verificaPontoFinal(char *palavra, int nuLinha) {
 	removerQuebraLinha(palavra);
 	int totalPalavra = strlen(palavra);
 	int valorAscii = (int) palavra[totalPalavra-1];
-	//printf("\n|||Numero linha %d - %d - %c |||\n", nuLinha, totalPalavra, palavra[totalPalavra-1]);
+	
+	// printf("\n|Numero linha (%d) - (%d) - (%d) - (%c) - (%s)|\n", nuLinha, totalPalavra, valorAscii, palavra[totalPalavra-1], palavra);
 	
 	// apenas se o ultimo caracter nao for ; => 59
 	if (valorAscii != 59) {
@@ -326,6 +327,9 @@ void getTamanhoVariavel(char palavra[], char retorno[], int nuLinha) {
 	limparLixoVetor(valorTamanho);
 	limparLixoVetor(auxValorTamanho);
 
+//	printf("%d\n", nuLinha);
+//	puts(palavra);
+
 	// percorre a palavra de traz para frente
 	for (i = tamanhoPalavra; i >= 0; i--) {
 		valorAscii = palavra[i];
@@ -335,7 +339,9 @@ void getTamanhoVariavel(char palavra[], char retorno[], int nuLinha) {
 		if (i == tamanhoPalavra && valorAscii == 93) {
 			isPossuiConchete++;
 			continue;
-		} else if((valorAscii >= 48 && valorAscii <= 57) && valorAscii != 91) { // condicao que ira acumular enquanto for numero e nao encontrar [.
+
+		// condicao que ira acumular enquanto for numero e nao encontrar 0-9 => 48-57, [ => 91, ponto final => 46.
+		} else if((valorAscii >= 48 && valorAscii <= 57) && valorAscii != 91 || valorAscii == 46) {
 			auxValorTamanho[count] = palavra[i];
 			countValorEntreConchete++;
 
@@ -349,10 +355,10 @@ void getTamanhoVariavel(char palavra[], char retorno[], int nuLinha) {
 
 	// se existir apenas um abertura ou fechamento de conchete
 	if (isPossuiConchete == 1) {
-		error(nuLinha, 9, palavra);
+		error(nuLinha, 16, palavra);
 	} else if (isPossuiConchete == 2) {
 		if (countValorEntreConchete == 0) {
-			error(nuLinha, 8, palavra);
+			error(nuLinha, 15, palavra);
 		}
 	}
 
@@ -405,30 +411,34 @@ void atualizarValorVariavel(TabelaSimbolo* lista, char* noVariavel, char* valor)
 
 // Verifica se a linha possui estrutura 'in' e verifica seus criterios.
 int isPalavraIn(char * palavra, int nuLinha, char * linha) {
+	
+	// printf("|%d|-|%s|-|%s|\n", nuLinha, palavra, linha);
+	// printf("---------------------------------------------------\n");
 	int isValido = 0, 
 		i , 
 		count = 0, 
 		parenteses = 0, 
 		valorAscii, 
 		isPossuiPontoVirgula = 0, 
-		isInValido = 0; // verifica se a palavra leia esta no padrao 'in('
+		isInValido = 0; // verifica se a palavra in esta no padrao 'in('
 	
 	char palavraAux[UCHAR_MAX];
 	limparLixoVetor(palavraAux);
 	
-	// verifica se a palavra reservada é leia
-	if (strcmp(palavra, palavrasReservadas[1]) == 0) {
+	// verifica se a palavra reservada é in
+	if (strcmp(palavra, palavrasReservadas[2]) == 0) {
 		
-		// identifica se a palavra reservada é 'leia'
+		// identifica se a palavra reservada é 'in'
 		isValido = 1;
 		
-		// valida se apos a palavra 'leia' possui obrigatoriamente um '(' e uma variavel.
+		// valida se apos a palavra 'in' possui obrigatoriamente um '(' e uma variavel.
 		for (i = 0; i < strlen(linha); i++) {
 			valorAscii = (int) linha[i];
-			
+					
 			// Verifica se a caracter ascii informado e uma condição de parada, para ser feita uma determinada analise.
-			// As condiçoes de parada sao os caracterers : \0, espaco, ), virgula, ponto virgula, $, tabs
-			if ((valorAscii != 10) && (valorAscii != 32) && (valorAscii != 41) && (valorAscii != 44) && (valorAscii != 36) && (valorAscii != 9)) {
+			// As condiçoes de parada sao os caracterers : Line Feed – LF (Windows) => 10, Enter – CR (Unix) => 13, espaco => 32, ) => 41, virgula => 44, tabs => 9
+			if ((valorAscii != 10) && (valorAscii != 13) && (valorAscii != 32) && (valorAscii != 41) && (valorAscii != 44) && (valorAscii != 9)) {
+				// printf("Entrou no IF\n");
 				palavraAux[count] = (char) valorAscii;
 				count++;
 				
@@ -437,9 +447,108 @@ int isPalavraIn(char * palavra, int nuLinha, char * linha) {
 					break;
 				}
 			}
+			// puts(palavraAux);
+			// printf("%d-%d-%c\n", nuLinha, valorAscii, linha[i]);
+			// printf("---------------------------------------------------\n");
 		}
 		
 		if (isInValido == 0) {
+			error(nuLinha, 18, linha);
+		}
+		
+		// nao pode haver declarações dentro da estrutura
+		for (i = 0; i < strlen(linha); i++) {
+			valorAscii = (int) linha[i]; 
+			
+			// cada caractere tem que ser diferente de \0, espaco e tab
+			if ((valorAscii != 10) && (valorAscii != 32) && (valorAscii != 9)) {
+				// balanceamento de parenteses '('
+				if (valorAscii == 40) {
+					parenteses ++;
+				}
+				
+				// balanceamento de parenteses ')'
+				if (valorAscii == 41) {
+					parenteses --;
+				}
+			}
+		}
+		
+		// verifica se a linha do in possui ';'
+		for (i = strlen(linha); i > 0; i--) {
+			valorAscii = (int) linha[i]; 
+			
+			// cada caractere tem que ser diferente de \0, espaco e tab
+			if ((valorAscii != 10) && (valorAscii != 32) && (valorAscii != 9)) {
+				
+				// verifica se o caracter e ';'
+				if (valorAscii == 59 && isPossuiPontoVirgula == 0) {
+					isPossuiPontoVirgula ++;
+					break;
+				}
+			}
+		}
+		
+		// verifica se existe duplo balanceamento de parentes
+		if (parenteses != 0) {
+			error(nuLinha, 6, linha);
+		}
+		
+		// verificar o ; no final da linha do 'in'
+		if (isPossuiPontoVirgula != 1) {
+			error(nuLinha, 13, linha);
+		}
+	}
+		
+	return isValido;
+}
+
+// Verifica se a linha possui estrutura 'out' e verifica seus respectivos criterios.
+int isPalavraOut(char * palavra, int nuLinha, char * linha) {
+	int isValido = 0, 
+		i , 
+		count = 0, 
+		parenteses = 0, 
+		valorAscii, 
+		isPossuiPontoVirgula = 0, 
+		isEscrevaValido = 0; // verifica se a palavra out esta no padrao 'out($' ou 'out("'
+	
+	char palavraAux[UCHAR_MAX];
+	limparLixoVetor(palavraAux);
+	
+	// printf("Entrou isPalavraOut \n");
+	// printf("|%d|-|%s|-|%s|\n", nuLinha, palavra, linha);
+	// printf("---------------------------------------------------\n");
+	
+	// verifica se a palavra reservada é out
+	if (strcmp(palavra, palavrasReservadas[3]) == 0) {
+		
+		// identifica se a palavra reservada é 'out'
+		isValido = 1;
+		
+		// valida se apos a palavra 'out' possui obrigatoriamente um '(' e uma variavel.
+		for (i = 0; i < strlen(linha); i++) {
+			valorAscii = (int) linha[i];
+					
+			// Verifica se a caracter ascii informado e uma condição de parada, para ser feita uma determinada analise.
+			// As condiçoes de parada sao os caracterers : Line Feed – LF (Windows) => 10, Enter – CR (Unix) => 13, espaco => 32, ) => 41, virgula => 44, tabs => 9
+			if ((valorAscii != 10) && (valorAscii != 13) && (valorAscii != 32) && (valorAscii != 41) && (valorAscii != 44) && (valorAscii != 59) && (valorAscii != 9)) {
+				//printf("Entrou no IF\n");
+				palavraAux[count] = (char) valorAscii;
+				count++;
+				
+				if ((strcmp(palavraAux, "out(") == 0)) {
+					isEscrevaValido++;
+					break;
+				}
+			}
+			
+			 // puts(palavraAux);
+			 // printf("%d-%d-%c\n", nuLinha, valorAscii, linha[i]);
+			 // printf("---------------------------------------------------\n");
+		}
+		
+		if (isEscrevaValido == 0) {
 			error(nuLinha, 19, linha);
 		}
 		
@@ -468,7 +577,7 @@ int isPalavraIn(char * palavra, int nuLinha, char * linha) {
 			// cada caractere tem que ser diferente de \0, espaco e tab
 			if ((valorAscii != 10) && (valorAscii != 32) && (valorAscii != 9)) {
 				
-				// verifica se o caracter e ';'
+				// verifica se o caracter é ';'
 				if (valorAscii == 59 && isPossuiPontoVirgula == 0) {
 					isPossuiPontoVirgula ++;
 					break;
@@ -478,16 +587,42 @@ int isPalavraIn(char * palavra, int nuLinha, char * linha) {
 		
 		// verifica se existe duplo balanceamento de parentes
 		if (parenteses != 0) {
-			error(nuLinha, 17, linha);
+			error(nuLinha, 6, linha);
 		}
-		
-		// verificar o ; no final da linha do 'in'
+
+		// verificar o ; no final da linha do leia
 		if (isPossuiPontoVirgula != 1) {
-			error(nuLinha, 18, linha);
+			error(nuLinha, 13, linha);
 		}
 	}
 		
 	return isValido;
+}
+
+// Verifica se o tipo de variavel possui limitador
+int isTipoVariavelLimitador(char *palavra) {
+
+	// retorna true quando a palavra e 'char'
+	if (strcmp(palavra, tiposVariaveis[1]) == 0) {
+		return 1;
+	}
+
+	// retorna true quando a palavra e 'float'
+	if (strcmp(palavra, tiposVariaveis[2]) == 0) {
+		return 1;
+	}
+
+	return 0;
+}
+
+// Valida o escopo da funcao existente no momento atual da execucao
+void validarDeclaracaoFunction(TabelaSimbolo* tabelaSimbolos, char* conteudoLinha, int nuLinha, char* functionEscopoAtual) {
+	// TODO ...
+}
+
+// Verifica se é uma atribuição de variavel
+int validarAtribuicaoVariavel(int nuLinha) {
+	// TODO ...
 }
 
 // Aplica validacoes referente a analise lexica e regras definidas na documentacao
@@ -503,7 +638,8 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
     int i,
 		valorAscii,
 		nuLinha,
-		count = 0;
+		count = 0,
+		countValor = 0;
 		
     char palavraAux[UCHAR_MAX],
 		 conteudoLinha[UCHAR_MAX], 
@@ -511,7 +647,10 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 		 palavraAuxVariavel[UCHAR_MAX],
 		 tipoVariavel[UCHAR_MAX],
 		 tamanhoPalavra[UCHAR_MAX],
-		 auxTamanhoPalavra[UCHAR_MAX];
+		 auxTamanhoPalavra[UCHAR_MAX],
+		 functionEscopoAtual[UCHAR_MAX],
+		 auxPalavraValor[UCHAR_MAX],
+		 auxNomeVariavel[UCHAR_MAX];
 		 
     bool isVariavel = false,
 		 isPalavraReservada = false,
@@ -519,7 +658,9 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 		 isLinhaComVariavel = false,
 		 isPossuiPontoVirgula = false,
 		 isIn = false,
-		 isOut = false;
+		 isOut = false,
+		 isDeclaracaoFunction = false,
+		 isAtribuicao = false;
 		 
     int isDeclaracaoMain = 0,
 		isBalanceamentoChaves = 0;
@@ -528,6 +669,11 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
     limparLixoVetor(tipoVariavel);
 	limparLixoVetor(conteudoLinha);
 	limparLixoVetor(conteudoLinhaComAspas);
+	limparLixoVetor(tamanhoPalavra);
+	limparLixoVetor(auxTamanhoPalavra);
+	limparLixoVetor(functionEscopoAtual);
+	limparLixoVetor(auxPalavraValor);
+	limparLixoVetor(auxNomeVariavel);
 
     while (no != NULL) {
      	strcpy(conteudoLinha, no->dados.conteudo);
@@ -536,11 +682,10 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 		verificarDuploBalanceamentoAspasParentesConchetes(conteudoLinha, nuLinha);
 		removePalavrasComAspas(conteudoLinha, conteudoLinhaComAspas, nuLinha);
 		isDeclaracaoMain = declaracaoMain(conteudoLinha, isDeclaracaoMain);
-		// puts(conteudoLinhaComAspas);
 
 		for (i = 0; i < strlen(conteudoLinha); i++) {
 			valorAscii = (int) conteudoLinha[i];
-
+			
 			// Verifica se existe uma abertura de chaves = { = 123
 			if (valorAscii == 123) {
 				isBalanceamentoChaves++;
@@ -557,7 +702,14 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 			if (isCondicaoDeParada(valorAscii) == 0) {
 				palavraAux[count] = (char) valorAscii;
 				count++;
+				
+				atualizarValorVariavel(tabelaSimbolos, auxNomeVariavel, auxPalavraValor);
 			} else {
+				
+				// verifica se é declaração de variavel e atribuição '=' => 61
+				if (isLinhaComVariavel == true && valorAscii == 61) {
+					isAtribuicao = true;
+				}
 
 				isVariavel = isDeclaracaoVariaveis(palavraAux, nuLinha);
 
@@ -568,21 +720,32 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 
 					// quando for palavra reservada posso tratar aqui, exemplo se for tipo de variavel posso guarda para validar depois
 					if (isPalavraReservada == true) {
+						// Caso modulo seja main salvar como escopo atual de funcao
+						if (strcmp(palavraAux, palavrasReservadas[0]) == 0) {
+							strcpy(functionEscopoAtual, palavraAux);
+						}
+						
 						// caso seja: integer, char, float
 						if (isTipoVariavel(palavraAux) == 1) {
 							strcpy(tipoVariavel, palavraAux);
 							isLinhaComVariavel = true;
 						}
-
-						// TODO caso seja 'in'
-						//isIn = isPalavraIn(palavraAux, nuLinha, conteudoLinha);
-						/*
-						if (isLinhaComVariavel == true && isIn == true) {
-							error(nuLinha, 16, conteudoLinha);
+						
+						// caso seja encontrado 'function'
+						if (strcmp(palavraAux, palavrasReservadas[1]) == 0) {
+							isDeclaracaoFunction = true;
+							validarDeclaracaoFunction(tabelaSimbolos, conteudoLinha, nuLinha, functionEscopoAtual);
 						}
-						*/
+
+						// caso seja 'in'
+						if (strcmp(palavraAux, palavrasReservadas[2]) == 0) {
+							isIn = isPalavraIn(palavraAux, nuLinha, conteudoLinha);
+						}
 
 						// TODO caso seja 'out'
+						if (strcmp(palavraAux, palavrasReservadas[3]) == 0) {
+							isOut = isPalavraOut(palavraAux, nuLinha, conteudoLinha);
+						}
 
 						// TODO caso seja 'foreach'
 
@@ -594,15 +757,12 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 					// printf("%d - [%s] - [%c] - [%s] - [%d] - [%d] E uma variavel\n", nuLinha, palavraAux, conteudoLinha[i], tipoVariavel, isLinhaComVariavel, isIn);
 
 					if (isLinhaComVariavel == true && isIn == false) {
-						// validar se a variavel ja foi declarada.
-						if (isVariavelRedeclarada(palavraAux, tabelaSimbolos) == 1) {
-							error(nuLinha, 11, palavraAux);
-						}
-
+											
 						// salva a variavel valida
 	    				Simbolo novoSimbolo;
 
-						if (strcmp(tipoVariavel, palavrasReservadas[10]) == 0) {
+	    				// tratar a obrigatoriedade do limitado ao extrair o tamanho, usando para 'char' e 'float'
+						if (isTipoVariavelLimitador(tipoVariavel)) {
 							// caso tenha tamanho recupera o tamanho e adiciona na tabela de simbolo
 							getTamanhoVariavel(palavraAux, auxTamanhoPalavra, nuLinha);
 							strcpy(tamanhoPalavra, auxTamanhoPalavra);
@@ -612,18 +772,30 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 						} else {
 							strcpy(novoSimbolo.tamanho, "");
 						}
-
-						// Salvar o modulo/funcao
+						
+						// validar se a variavel ja foi declarada, e existe uma tentativa de redeclaracao
+						if (isVariavelRedeclarada(palavraAux, tabelaSimbolos) == 1) {
+							error(nuLinha, 11, palavraAux);
+						}
 
 						// Salvar valor
 
 						// Salvar a palavra
 	    				strcpy(novoSimbolo.palavra, palavraAux);
+	    				strcpy(auxNomeVariavel, palavraAux);
 
 						// Salva o tipo da variavel
 	    				strcpy(novoSimbolo.tipo, tipoVariavel);
+	    				
+	    				// Salva o escopo de funcao/modulo atual
+	    				strcpy(novoSimbolo.funcao_modulo, functionEscopoAtual);
 
 						insereFinalTabelaSimbolo(tabelaSimbolos, novoSimbolo);
+					}
+					
+					// validar se a variavel não foi declarada, pelo tipo
+					if (isVariavelRedeclarada(palavraAux, tabelaSimbolos) == 0) {
+						error(nuLinha, 17, palavraAux);
 					}
 				}
 
@@ -646,10 +818,10 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 				palavraAux[count] = (char) valorAscii;
 				count++;
 			}
-			
-			// Verifica se o proximo caracterer é = 61
+
+			// Verifica se o proximo caracterer é '=' => 61
 			if (valorAscii == 61) {
-				// TODO tratar aqui quando encontrar = 61, e for uma declaração de variavel
+				// TODO tratar aqui quando encontrar '=' => 61, e for uma declaração de variavel
 				// atualizarValorVariavel(tabelaSimbolos, char* noVariavel, char* valor)
 			}
 
@@ -664,7 +836,15 @@ void analiseRegras(Lista* lista, TabelaSimbolo* tabelaSimbolos) {
 		no = no->prox;
 		limparLixoVetor(conteudoLinhaComAspas);
 		isLinhaComVariavel = false;
+		isDeclaracaoFunction = false;
 		limparLixoVetor(tipoVariavel);
+		limparLixoVetor(auxNomeVariavel);
+		limparLixoVetor(auxPalavraValor);
+		isIn = false;
+		isOut = false;
+		isAtribuicao = false;
+		countValor = 0;
+		
 
 	} // fim while que percorre as linhas
 

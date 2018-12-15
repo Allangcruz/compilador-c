@@ -14,16 +14,20 @@ void limparLixoVetor(char vetor[]) {
 void removerQuebraLinha(char* palavra) {
 	int i, valorAscii, count = 0;
 	char palavraAux[UCHAR_MAX];
+	limparLixoVetor(palavraAux);
 	
 	for (i = 0; i < strlen(palavra); i++) {
 		valorAscii = (int) palavra[i];
 
-		if (valorAscii != 10) {
+		// Line Feed – LF (Windows) => 10
+		// Enter – CR (Unix) => 13
+		if ((valorAscii != 13) && (valorAscii != 10)) {
+			// printf("====> %d-%d-%c\n", valorAscii, strlen(palavra), palavra[i]);
 			palavraAux[count] = palavra[i];
 			count++;
 		}
 	}
-	
+
 	strcpy(palavra, palavraAux);
 
 	memoriaConsumida(sizeof(i), 1);
@@ -89,11 +93,31 @@ void error(int nuLinha, int tipoErro, char *palavra) {
 		break;
 		
 		case 13:
-			printf("13 - Erro => A linha e uma declaracao de variavel e a mesma deve conter ';' no final da linha (%s). [linha - %d].\n", palavra, nuLinha);
+			printf("13 - Erro => Nao conter ';' no final da linha (%s). [linha - %d].\n", palavra, nuLinha);
 		break;
 		
 		case 14:
 			printf("14 - Erro => A declaração da palavra reservada 'in' esta incorreta, (%s), favor verificar. [linha - %d].\n", palavra, nuLinha);
+		break;
+		
+		case 15:
+			printf("15 - Erro => É obrigatorio um valor de tamanho para variavel, (%s). [linha - %d].\n", palavra, nuLinha);
+		break;
+		
+		case 16:
+			printf("16 - Erro => Há ausência do caracter '[' ou ']', (%s). [linha - %d].\n", palavra, nuLinha);
+		break;
+		
+		case 17:
+			printf("17 - Erro => A variavel (%s) não foi declarada porque precisa de tipo. [linha - %d].\n", palavra, nuLinha);
+		break;
+		
+		case 18:
+			printf("18 - Erro => A declaração da palavra reservada 'in' esta incorreta, (%s), favor verificar. [linha - %d].\n", palavra, nuLinha);
+		break;
+		
+		case 19:
+			printf("19 - Erro => A declaração da palavra reservada 'out' esta incorreta, (%s), favor verificar. [linha - %d].\n", palavra, nuLinha);
 		break;
 
 		default:

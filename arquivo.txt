@@ -1,16 +1,11 @@
 main() {
+	integer $a1, $a2, $a3, $a4;
 
-    char $nome;
-    char $nome1[10];
-    char $nome3, $nome4;
+	$a3;
 
-    integer $idade;
-    float $preco;
+	char $nome1[1];
 
-
-    in($idade);
-
-    out($nome, "teste");
-}	
-
+	in($a3, $a2,$a4,$nome1);
+	out($nome1, "Teste 123", $a3, $a2,$a4);
+}
 
